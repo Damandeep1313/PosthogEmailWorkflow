@@ -143,25 +143,46 @@ app.get("/sync", async (req, res) => {
   for (const rec of recordings) {
     const email = rec.person?.properties?.email;
     if (!email) continue;
-
+  
     const end_time = new Date(rec.end_time || Date.now());
     const start_time = new Date(rec.start_time || Date.now());
-
-    await User.findOneAndUpdate(
-      { email },
-      {
-        $setOnInsert: {
-          start_time,
-          last_template_sent: null,
-        },
-        $max: { end_time: end_time },
-        $inc: { count: 1 },
-        $addToSet: { session_history: end_time },
-      },
-      { upsert: true, new: true }
-    );
-    
+  
+    // Fetch user first
+    let user = await User.findOne({ email });
+  
+    if (!user) {
+      // User does not exist: create new user with this session
+      await User.create({
+        email,
+        start_time,
+        end_time,
+        count: 1,
+        session_history: [end_time],
+        last_template_sent: null,
+      });
+    } else {
+      // Check if this session's end_time already exists
+      if (end_time > user.end_time) {
+        // Only increment if new end_time is strictly greater than stored end_time
+        await User.findOneAndUpdate(
+          { email },
+          {
+            $max: { end_time },
+            $inc: { count: 1 },
+            $addToSet: { session_history: end_time },
+          }
+        );
+      } else {
+        // No increment if end_time is not newer, but update end_time if needed
+        await User.findOneAndUpdate(
+          { email },
+          { $max: { end_time } }
+        );
+      }
+      
+    }
   }
+  
 
   // Step 2: Classify and prepare emails
   const allUsers = await User.find();
