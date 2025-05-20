@@ -73,7 +73,7 @@ function sendEmail(recipients, templateName) {
 const API_KEY = "phx_NPB9hVJVoijX72qCyJYi3azMQ59E87ZD7F25gNuvAhTXcC5";
 const BASE_URL =
   "https://us.posthog.com/api/projects/128173/session_recordings/";
-const LIMIT = 500;
+const LIMIT = 1000;
 
 async function fetchSessionRecordings() {
   let allRecordings = [];
