@@ -51,7 +51,7 @@ function shouldSendTemplate(user, templateName, cooldownDays = 14) {
 // Email sending function
 function sendEmail(recipients, templateName) {
   const templateIdMap = {
-    "Template A": "d-2ea617fd7b66416ea0271d98d1817335",
+    "Template A": "TEMPLATE_ID_A",
     "Template B": "TEMPLATE_ID_B",
     "Template X": "TEMPLATE_ID_X",
     Dormant: "d-2ea617fd7b66416ea0271d98d1817335",
