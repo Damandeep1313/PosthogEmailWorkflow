@@ -54,9 +54,9 @@ function sendEmail(recipients, templateName) {
     "Template A": "TEMPLATE_ID_A",
     "Template B": "TEMPLATE_ID_B",
     "Template X": "TEMPLATE_ID_X",
-    Dormant: "d-2ea617fd7b66416ea0271d98d1817335",
-    Resurrecting: "d-1936f4647fd04108a9d69300638a258d",
-    Returning: "d-703d31c2291a43b5ab096182d9011bd6",
+    Dormant: "d-c6fc3e6aee0c43718bff86e30567330e",
+    Resurrecting: "d-7611a59443cd49af9ed5d7bb92fe321c",
+    Returning: "d-05ad975e3347423fbb357c7d6424cff2",
   };
 
   const messages = recipients.map((email) => ({
