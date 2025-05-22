@@ -59,11 +59,23 @@ function sendEmail(recipients, templateName) {
     Returning: "d-05ad975e3347423fbb357c7d6424cff2",
   };
 
+  const subjectMap = {
+    Dormant: "We’ve missed you at On-Demand!",
+    Resurrecting: "Let’s get back on track 🚀",
+    Returning: "Welcome back to On-Demand!",
+    "Template A": "Your Template A Subject",
+    "Template B": "Your Template B Subject",
+    "Template X": "Your Template X Subject",
+  };
+
   const messages = recipients.map((email) => ({
     to: email,
     from: "info@on-demand.io",
     templateId: templateIdMap[templateName],
-    dynamicTemplateData: { name: email.split("@")[0] },
+    dynamicTemplateData: {
+    name: email.split("@")[0],
+    subject: subjectMap[templateName], 
+  },
   }));
 
   return sgMail.send(messages);
