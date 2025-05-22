@@ -277,6 +277,24 @@ app.post("/unsubscribe", async (req, res) => {
   }
 });
 
+app.get("/unsubscribe", async (req, res) => {
+  const email = req.query.email;
+  if (!email) return res.status(400).send("Email query param is required");
+
+  try {
+    await UnsubscribedUser.updateOne(
+      { email },
+      { $set: { email } },
+      { upsert: true }
+    );
+    res.send(`<h1>Unsubscribed successfully</h1><p>${email} has been unsubscribed.</p>`);
+  } catch (err) {
+    console.error("Unsubscribe GET error:", err);
+    res.status(500).send("Error unsubscribing.");
+  }
+});
+
+
 // DB and start server
 mongoose
   .connect(
