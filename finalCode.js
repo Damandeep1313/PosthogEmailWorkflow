@@ -87,20 +87,23 @@ const BASE_URL =
   "https://us.posthog.com/api/projects/128173/session_recordings/";
 const LIMIT = 1000;
 
-async function fetchSessionRecordings(apiKey) {  // 👈 Add apiKey parameter
+async function fetchSessionRecordings(apiKey) {
   let allRecordings = [];
   let nextUrl = `${BASE_URL}?limit=${LIMIT}`;
-
   while (nextUrl) {
     try {
       const response = await axios.get(nextUrl, {
-        headers: { Authorization: `Bearer ${apiKey}` },  // 👈 Use the parameter
+        headers: { Authorization: `Bearer ${apiKey}` },
       });
       allRecordings = allRecordings.concat(response.data.results);
       nextUrl = response.data.next;
     } catch (err) {
-      console.error("Error fetching from PostHog:", err.message);
-      break;
+      if (err.response && err.response.status === 403) {
+        console.log("Invalid API key detected in fetchSessionRecordings");
+        throw new Error("Invalid or unauthorized PostHog API key");
+      }
+      console.log("Error fetching from PostHog:", err.message);
+      throw err; // Re-throw other errors
     }
   }
   return allRecordings;
@@ -153,7 +156,7 @@ function classifyUser(user) {
 
 // Not in original code, but might have been added
 const sendErrorResponse = (res, statusCode, message, details = {}) => {
-  console.error(`Error [${statusCode}]: ${message}`, details);
+  console.log(`ERROR [${statusCode}]: ${message}`, JSON.stringify(details, null, 2));
   return res.status(statusCode).json({
     status: "error",
     message,
