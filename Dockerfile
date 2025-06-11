@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the server
-CMD ["node", "fastestLogic.js"]
+CMD ["node", "finalCode.js"]
